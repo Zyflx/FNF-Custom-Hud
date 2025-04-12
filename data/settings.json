@@ -1,0 +1,10 @@
+[
+	{
+		"save": "CustomHUD_hudType",
+		"name": "Hud Type: ",
+		"type": "string",
+		"description": "What hud type would you like to use?",
+		"value": "Default",
+		"options": ["Default", "Forever Engine"] 
+	},
+]

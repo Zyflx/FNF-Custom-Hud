@@ -1,0 +1,8 @@
+{
+	"name": "Custom Hud",
+	"description": "Psych Engine modpack which lets you choose between recreations of FNF engine huds!",
+	"restart": false,
+	"runsGlobally": true,
+	"color": [255, 255, 255],
+	"discordRPC": "863222024192262205"
+}
