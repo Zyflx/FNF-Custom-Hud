@@ -4,7 +4,6 @@ import flixel.text.FlxTextBorderStyle;
 import backend.Difficulty;
 import states.MainMenuState;
 
-var scoreBar: FlxText;
 var judgementCounter: FlxText;
 
 final ranks: Array<Dynamic> = [
@@ -23,7 +22,6 @@ function onCreatePost():Void {
 
     timeBar.kill();
     timeTxt.kill();
-    scoreTxt.kill();
 
     healthBar.y = down ? 64 : FlxG.height * 0.875;
     healthBar.setColors(FlxColor.RED, 0xFF66FF33);
@@ -31,13 +29,9 @@ function onCreatePost():Void {
     iconP1.y = healthBar.y - (iconP1.height * 0.5);
     iconP2.y = healthBar.y - (iconP2.height * 0.5);
 
-    scoreBar = uiGroup.add(new FlxText(0, Math.floor(healthBar.y + 40), FlxG.width, '', 16));
-    scoreBar.setFormat(font, 16, FlxColor.WHITE, 'center', FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-    scoreBar.active = false;
-    scoreBar.antialiasing = true;
-    scoreBar.borderSize = 1.5;
-
-    updateScoreTxt();
+    scoreTxt.size = 16;
+    scoreTxt.borderSize = 1.5;
+    scoreTxt.y = Math.floor(healthBar.y + 40);
 
     final cornerMark: FlxText = uiGroup.add(new FlxText(0, 0, 0, 'PSYCH ENGINE v' + MainMenuState.psychEngineVersion, 16));
     cornerMark.setFormat(font, 16, FlxColor.WHITE);
@@ -94,15 +88,10 @@ function noteMissPress(column: Int):Void {
 }
 
 function onUpdateScore():Void {
-    if(songHits <= 0) return;
-    updateScoreTxt();
-}
-
-function updateScoreTxt() {
     final div: String = ' • ';
-    final comboDisp: String = (ratingFC != '' && ratingFC != 'Clear') ? '[' + ratingFC + ']' : '';
+    final comboDisp: String = (ratingFC != '' && ratingFC != 'Clear') ? ' [' + ratingFC + ']' : '';
     final accuracy: Float = FlxMath.roundDecimal(ratingPercent * 100, 2);
-    scoreBar.text = 'Score: ' + songScore + div + 'Accuracy: ' + (accuracy + '%') + ' ' + comboDisp + div +
+    scoreTxt.text = 'Score: ' + songScore + div + 'Accuracy: ' + (accuracy + '%') + comboDisp + div +
     'Combo Breaks: ' + songMisses + div + 'Rank: ' + getRank(accuracy);
 }
 
@@ -119,7 +108,7 @@ function updateJudgementCounter():Void {
     judgementCounter.text = 'Sick: ' + sicks + '\nGood: ' + goods + '\nBad: ' + bads + '\nShit: ' + shits + '\nMiss: ' + songMisses;
 }
 
-function getRank(acc: Float):Void {
+function getRank(acc: Float):String {
     for(i in ranks) {
         if(i[0] <= acc)
             return i[1];
