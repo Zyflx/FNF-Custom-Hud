@@ -42,6 +42,11 @@ function onCreatePost():Void {
     for(i in 0...ratingsData.length)
         ratingsData[i].image = ['sick', 'good', 'bad', 'shit'][i] + '-kade';
 
+    if(!ClientPrefs.data.middleScroll) {
+        for(receptor in strumLineNotes)
+            receptor.x -= 42;
+    }
+
     timeBar.kill();
     timeTxt.kill();
 
