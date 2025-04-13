@@ -8,11 +8,24 @@ var judgementCounter: FlxText;
 var songWatermark: FlxText;
 var versionWatermark: FlxText;
 
+final ranks: Array<Dynamic> = [
+    [100, 'S+'],
+    [95, 'S'],
+    [90, 'A'],
+    [85, 'B+'],
+    [80, 'B'],
+    [75, 'C+'],
+    [70, 'C'],
+    [65, 'D+'],
+    [60, 'D']
+];
+
 function onCreatePost():Void {
     final down: Bool = ClientPrefs.data.downScroll;
     final font: String = Paths.font('PhantomMuff.ttf');
 
     scoreTxt.kill();
+    if(cpuControlled) botplayTxt.font = font;
 
     timeBar.angle = 90;
     timeBar.leftToRight = false;
@@ -50,6 +63,21 @@ function onCreatePost():Void {
     versionWatermark.antialiasing = true;
     versionWatermark.borderSize = 2;
     versionWatermark.x = (FlxG.width - versionWatermark.width) - 15;
+
+    game.updateIconsScale = (delta: Float) -> {
+        final lerpVal: Float = Math.exp(-delta * 20.0);
+        final lerpP1: Float = FlxMath.lerp(1.0, iconP1.scale.x, lerpVal);
+        final lerpP2: Float = FlxMath.lerp(1.0, iconP2.scale.x, lerpVal);
+
+        iconP1.scale.set(lerpP1, lerpP1);
+        iconP1.updateHitbox();
+
+        iconP2.scale.set(lerpP2, lerpP2);
+        iconP2.updateHitbox();
+
+        iconP1.origin.set(30, 0);
+        iconP2.origin.set(70, 0);
+    }
 }
 
 function goodNoteHit(note: Note):Void {
@@ -67,7 +95,9 @@ function noteMissPress(column: Int):Void {
 
 function onUpdateScore():Void {
     if(songHits <= 0) return;
-    infoText.text = 'Score: ' + songScore + '\nMisses: ' + songMisses + '\nAccuracy: ' + (FlxMath.roundDecimal(ratingPercent * 100, 2) + '%') + '\nRating: ' + ratingName;
+    final accuracy: Float = FlxMath.roundDecimal(ratingPercent * 100, 2);
+    final rank: String = getRank(accuracy);
+    infoText.text = 'Score: ' + songScore + '\nMisses: ' + songMisses + '\nAccuracy: ' + (accuracy + '%') + '\nRating: ' + ratingName + (rank != '' ? ' (' + rank + ')' : '');
 }
 
 function updateJudgementCounter():Void {
@@ -76,4 +106,12 @@ function updateJudgementCounter():Void {
     final bads: Int = ratingsData[2].hits;
     final shits: Int = ratingsData[3].hits;
     judgementCounter.text = 'Sick: ' + sicks + '\nGood: ' + goods + '\nBad: ' + bads + '\nShit: ' + shits + '\nCombo: ' + combo;
+}
+
+function getRank(accuracy: Float):String {
+    for(i in ranks) {
+        if(i[0] <= accuracy)
+            return i[1];
+    }
+    return accuracy == 0 ? '' : 'F';
 }
