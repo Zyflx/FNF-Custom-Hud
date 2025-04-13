@@ -57,7 +57,15 @@ function onCreatePost():Void {
     judgementCounter.active = false;
     judgementCounter.antialiasing = true;
     judgementCounter.borderSize = 2;
-    judgementCounter.screenCenter(0x10);    
+    judgementCounter.screenCenter(0x10);
+
+    if(cpuControlled) {
+        botplayTxt.text = '[AUTOPLAY]';
+        botplayTxt.borderSize = 2;
+        botplayTxt.y = centerMark.y + (down ? -60 : 60);
+        if(ClientPrefs.data.middleScroll)
+            botplayTxt.y += down ? -125 : 125;
+    }
 
     iconP1.autoAdjustOffset = iconP2.autoAdjustOffset = false;
 
